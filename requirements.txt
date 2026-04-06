@@ -1,0 +1,7 @@
+vkbottle
+watchfiles
+asyncpg
+alembic
+uliweb-alembic
+yoyo-migrations
+pydantic
