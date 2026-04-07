@@ -73,7 +73,7 @@ async def get_messages(chat_id: int, limit: int = 50) -> List[MessageModel]:
 
 async def delete_messages(chat_id: int):
     async with db.pool.pool.acquire() as conn:
-        await conn.exec("""
+        await conn.execute("""
                                    DELETE
                                    FROM messages m
                                    WHERE m.chat_id = $1;
