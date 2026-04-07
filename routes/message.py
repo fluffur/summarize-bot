@@ -6,7 +6,7 @@ from vkbottle.bot import Message
 from vkbottle.dispatch.rules.base import CommandRule
 from vkbottle.framework.labeler import BotLabeler
 
-from db.repository import get_user, add_user, add_chat, add_message, get_messages
+from db.repository import get_user, add_user, add_chat, add_message, get_messages, delete_messages
 
 bl = BotLabeler()
 
@@ -66,6 +66,12 @@ async def send_summary(message: Message):
     except Exception as e:
         await message.answer(f"Произошла ошибка при вызове API: {e}")
         logging.error(f"Deepseek Exception: {e}")
+
+@bl.message(CommandRule(command_text="clear"))
+async def clear_messages(message: Message):
+    chat_id = await add_chat(message.from_id)
+    await delete_messages(chat_id)
+    return "История сообщений успешно очищена"
 
 @bl.message()
 async def save_message(message: Message):
