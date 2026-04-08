@@ -3,12 +3,18 @@ import os
 import aiohttp
 
 from vkbottle.bot import Message
-from vkbottle.dispatch.rules.base import CommandRule
+from vkbottle.dispatch.rules.base import CommandRule, ChatActionRule
 from vkbottle.framework.labeler import BotLabeler
 
 from db.repository import get_user, add_user, add_chat, add_message, get_messages, delete_messages
 
 bl = BotLabeler()
+
+
+@bl.message(ChatActionRule("chat_invite_user"))
+async def handle_invite(message: Message):
+    if message.action.member_id == -message.group_id:
+        await message.answer("Всем привет!. Чтобы получить краткое содержание (выжимку) переписки в этом чате, напишите команду /summary")
 
 
 @bl.message(CommandRule(command_text="summary", prefixes=["/"]))
