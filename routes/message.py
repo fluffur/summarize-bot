@@ -13,7 +13,7 @@ bl = BotLabeler()
 
 @bl.message(CommandRule(command_text="summary", prefixes=["/"]))
 async def send_summary(message: Message):
-    chat_id = await add_chat(message.from_id)
+    chat_id = await add_chat(message.peer_id)
 
     messages = await get_messages(chat_id)
     reversed_messages = list(reversed(messages))
@@ -69,26 +69,27 @@ async def send_summary(message: Message):
 
 @bl.message(CommandRule(command_text="clear"))
 async def clear_messages(message: Message):
-    chat_id = await add_chat(message.from_id)
+    chat_id = await add_chat(message.peer_id)
     await delete_messages(chat_id)
     return "История сообщений успешно очищена"
 
 @bl.message()
 async def save_message(message: Message):
-    peer_id = message.from_id
-    user = await get_user(peer_id)
+    user_id = message.from_id
+    peer_id = message.peer_id
+    user = await get_user(user_id)
 
     if user is None:
-        vk_user = (await message.ctx_api.users.get(user_ids=[peer_id]))[0]
+        vk_user = (await message.ctx_api.users.get(user_ids=[user_id]))[0]
 
         await add_user(
-            peer_id=peer_id,
+            peer_id=user_id,
             username=vk_user.screen_name,
             first_name=vk_user.first_name,
             last_name=vk_user.last_name
         )
 
-        user = await get_user(peer_id)
+        user = await get_user(user_id)
 
     chat_id = await add_chat(peer_id)
 
